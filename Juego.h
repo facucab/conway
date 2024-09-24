@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+void juego();
 int** crearTablero(unsigned int fila, unsigned int col);
 void destruirTablero(int **tablero, unsigned int fila);
 void imprimirTablero(int **tablero, unsigned int fila, unsigned int col);
