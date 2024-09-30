@@ -1,61 +1,31 @@
 #include "Juego.h"
-void juego(){ ///Cuerpo del juego
-
-    int configIniciales[2] = {0};
-
-    ///Configuro las condiciones inciales del tablero:
-    configurarTablero(configIniciales);
-
-    ///Creo el tablero
-    int **tablero = crearTablero(configIniciales[0], configIniciales[1]);
-
-    ///inicializo la matriz con un patron bï¿½sico:
-    //inicializarTablero(tablero, configIniciales[0], configIniciales[1]);
-    patronPlaneador(tablero, configIniciales[0], configIniciales[0]);
-    ///imprimo el tablero:
-    printf("\n\n");
-    imprimirTablero(tablero, configIniciales[0], configIniciales[1]);
-
-    ///Mover paso a paso las generaciones
-    int ejecutar = 1;
-    /*
-    printf("\n\n Ingrese 1 para la siguiente generacion: ");
-    int ejecutar = 0;
-    scanf("%d", &ejecutar);
-    */
-    int generacion = 1;
-
-    while(generacion < 30) // bucle infinito  {Cambiar condicoon para hacer paso a paso}
-    {
-
-        system("cls");
-        printf("\nGENERACION: %d\n", generacion);
-        tablero = procesarTablero(tablero, configIniciales[0], configIniciales[1]);
-        imprimirTablero(tablero, configIniciales[0], configIniciales[1]);
-        generacion++;
-
-        Sleep(300);
-
-        ///Mover paso a paso las generaciones
-        /*
-        printf("\n\nIngrese 1 para la siguiente generacion: ");
-        scanf("%d", &ejecutar);
-        */
-    }
-    destruirTablero(tablero, configIniciales[0]);
-}
-void inicializarTablero(int **tablero, int fila, int col)
+void patron_canonPlaneador(int **tablero, unsigned int fila, unsigned int col)
 {
-        int x = (fila - 1) / 2;
-        int y = (col -1)  / 2;
+    //NO
+    int x = (fila - 3) / 2;
+    int y = (col - 3) / 2;
 
-        tablero[x][y] = 1;
-        tablero[x][y + 1] = 1;
-        tablero[x+1][y+1] = 1;
-        tablero[x+2][y+1] = 1;
-        tablero[x+1][y+2] = 1;
+    tablero[x + 1][y + 2] = 1;
+    tablero[x + 1][y + 3] = 1;
+    tablero[x + 1][y + 4] = 1;
+    tablero[x + 2][y + 1] = 1;
+    tablero[x + 2][y + 2] = 1;
+    tablero[x + 2][y + 5] = 1;
+    tablero[x + 2][y + 6] = 1;
+    tablero[x + 3][y + 2] = 1;
 }
-int ** procesarTablero(int **tablero, int fila, int col)
+void inicializarTablero(int **tablero, unsigned int fila, unsigned int col)
+{
+    int x = (fila - 3) / 2; // el 3 va por el tamaño del patron
+    int y = (col - 3) / 2;
+
+    tablero[x][y] = 1;
+    tablero[x][y + 1] = 1;
+    tablero[x+1][y+1] = 1;
+    tablero[x+2][y+1] = 1;
+    tablero[x+1][y+2] = 1;
+}
+void procesarTablero(int **tablero, unsigned int fila, unsigned int col)
 {
     int** tableroSiguiente = crearTablero(fila, col);
     int cantVecinos = 0;
@@ -80,9 +50,18 @@ int ** procesarTablero(int **tablero, int fila, int col)
         }
     }
 
-    return tableroSiguiente;
+    //copia de tableros
+    for(int i = 0; i< fila; i++)
+    {
+        for(int j = 0; j< col; j++)
+        {
+            tablero[i][j]  = tableroSiguiente[i][j];
+        }
+    }
+
+    free(tableroSiguiente);
 }
-int cantVecinosVivos(int ** tablero, int x, int y, int fila, int col)
+int cantVecinosVivos(int ** tablero, int x, int y, unsigned int fila, unsigned int col)
 {
     int cantVivas = 0;
     for(int i = x-1; i<= x+1; i++)
@@ -107,60 +86,6 @@ int cantVecinosVivos(int ** tablero, int x, int y, int fila, int col)
     }
     return cantVivas;
 }
-void patronPlaneador(int **tablero, int fila, int col)
-{
-        int x = (fila - 1) / 2;
-        int y = (col -1)  / 2;
-
-        tablero[x][y] = 1;
-        tablero[x+1][y+1] = 1;
-        tablero[x+2][y] = 1;
-        tablero[x+2][y+1] = 1;
-        tablero[x+2][y-1] = 1;
-}
-void configurarTablero(int * config)
-{
-    printf("\n----------- CONFIGURACIONES INICIALES -----------\n");
-
-    ///Ingresar filas:
-    printf("\nIngrese un numero de filas entre 5 y 30: ");
-    scanf("%d", config);
-    while(*config <5 || *config > 30)
-    {
-        printf("\nNumero de filas invalido, vuelva intentar: ");
-        scanf("%d", config);
-    }
-
-    ///Ingresar columnas:
-    printf("\nIngrese un numero de columnas entre 5 y 30:");
-    config++;
-    scanf("%d", config);
-    while(*config <5 || *config > 30)
-    {
-        printf("\nNumero de columnas invalido, vuelva intentar: ");
-        scanf("%d", config);
-    }
-
-    printf("\n-------------------------------------------------\n");
-}
-void imprimirTablero(int **tablero, unsigned int fila, unsigned int col)
-{
-    for(int i = 0; i<fila; i++)
-    {
-
-        for(int j = 0; j<col; j++)
-        {
-            if(tablero[i][j] == 0)
-            {
-                printf(" [ ] ");
-            }
-            else{
-                printf("\033[32m [*] \033[0m");
-            }
-        }
-        printf("\n");
-    }
-}
 void destruirTablero(int **tablero, unsigned int fila)
 {
     for(int i = 0; i<fila; i++)
@@ -176,7 +101,8 @@ int** crearTablero(unsigned int fila, unsigned int col)
 
     if(tablero == NULL)
     {
-        printf("ERROR CREANDO FILAS");
+        printf("\nError en la asignacion de memoria para las filas\n");
+        return NULL; //Estoy en duda.
     }
 
     for(int i=0; i<fila; i++)
@@ -190,7 +116,69 @@ int** crearTablero(unsigned int fila, unsigned int col)
             }
 
             free(tablero);
+            printf("\nError en la asignacion de memoria para las columnas\n");
+            return NULL;
         }
     }
+
     return tablero;
+}
+void configurarTablero(int * config)
+{
+    printf("\n----------- CONFIGURACIONES INICIALES -----------\n");
+
+    ///Ingresar filas:
+    printf("\nIngrese un numero de filas entre 5 y 80: ");
+    scanf("%d", config);
+    while(*config <5 || *config > 80)
+    {
+        printf("\nNumero de filas invalido, vuelva intentar: ");
+        scanf("%d", config);
+    }
+
+    ///Ingresar columnas:
+    printf("\nIngrese un numero de columnas entre 5 y 60:");
+    config++;
+    scanf("%d", config);
+    while(*config <5 || *config > 60)
+    {
+        printf("\nNumero de columnas invalido, vuelva intentar: ");
+        scanf("%d", config);
+    }
+
+    printf("\n-------------------------------------------------\n");
+}
+
+
+//Renderizados
+void imprimirTablero(int **tablero, unsigned int fila, int unsigned col, SDL_Renderer * renderer )
+{
+    SDL_SetRenderDrawColor(renderer, 40, 40, 40, 0xFF);
+    SDL_RenderClear(renderer);
+    for(int i = 0; i <fila; i++)
+    {
+        for(int j = 0; j < col; j++)
+        {
+            if(tablero[i][j] != 0)
+            {
+                drawSquare(renderer,  i * TAM_SQUARE, j * TAM_SQUARE);
+            }
+        }
+    }
+
+    SDL_RenderPresent(renderer);
+}
+void drawSquare(SDL_Renderer * renderer, unsigned int posX, unsigned int posY)
+{
+    SDL_Rect square;
+    //posicion
+    square.x = posX;
+    square.y = posY;
+    //Tamaño
+    square.h = TAM_SQUARE;
+    square.w = TAM_SQUARE;
+
+    //Lo cargo al render:
+    SDL_SetRenderDrawColor(renderer, 0, 200, 0, 0xFF);
+    SDL_RenderFillRect(renderer, &square);
 }
