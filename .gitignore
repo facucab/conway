@@ -7,7 +7,7 @@
 *.tmp
 
 # Archivos de configuración específicos del IDE
-*.cbp
+
 *.layout
 *.depend
 *.workspace
