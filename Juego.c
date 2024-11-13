@@ -1,4 +1,60 @@
 #include "Juego.h"
+int inicializarTablero_Archivo(const char *nombre, int **tablero)
+{
+
+    //variables:
+    char linea[100];
+    tCoordenadas c;
+
+    FILE * arch = fopen(nombre, "rt");
+    if(!arch)
+    {
+        return -1;
+    }
+
+    //
+   while(fgets(linea, sizeof(linea), arch))
+   {
+
+        trozar(linea, &c);
+        tablero[c.x][c.y] = 1;
+   }
+   fclose(arch);
+   return 1;
+
+}
+int crearPatron_archivo(const char * nombre)
+{
+    FILE * archivo = fopen(nombre, "wt");
+    if(!archivo)
+    {
+        printf("ERROR EN LA CARGA DEL PATRON");
+        return 0;
+    }
+    fprintf(archivo, "1|2\n");
+    fprintf(archivo, "1|3\n");
+    fprintf(archivo, "1|4\n");
+    fprintf(archivo, "2|1\n");
+    fprintf(archivo, "2|2\n");
+    fprintf(archivo, "2|5\n");
+    fprintf(archivo, "2|6\n");
+    fprintf(archivo, "3|2\n");
+
+    fclose(archivo);
+    return 1;
+}
+void trozar(char * linea, tCoordenadas * c)
+{
+    char * aux = strchr(linea , '\n');
+    *aux = '\0';
+
+    aux = strrchr(linea, '|');
+    sscanf(aux+1, "%d", &c->y);
+    *aux = '\0';
+
+    sscanf(linea, "%d", &c->x);
+    *aux = '\0';
+}
 void patron_canonPlaneador(int **tablero, unsigned int fila, unsigned int col)
 {
     //NO

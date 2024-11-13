@@ -61,8 +61,12 @@ int main(int argc, char *argv[])
 
     ///Inicializar tablero
     int **tablero = crearTablero(config[INDEX_F], config[INDEX_C]);
+    /*
+    crearPatron_archivo(argv[1]);
+    inicializarTablero_Archivo(argv[1], tablero);
+    */
     inicializarTablero(tablero, config[INDEX_F], config[INDEX_C]);
-    //patron_canonPlaneador(tablero, config[INDEX_F], config[INDEX_C]);
+
 
 
     ///Evento principal
